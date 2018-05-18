@@ -27,7 +27,7 @@ cv2.createTrackbar("Luminosità alta", "window_0", 255, 255, nothing)
 
 #acquisisco lo stream video
 if not args.get("video", False):
-    camera = cv2.VideoCapture(args["dev"])
+    camera = cv2.VideoCapture(int(args["dev"]))
 else:
     camera = cv2.VideoCapture(args["video"])
 
@@ -100,19 +100,20 @@ while True:
     #faccio il resize delle immagine per poterle visualizzarla in modo
     #concatenato in un unica finestra
     frame = cv2.resize(frame, (300, 300))
+    #faccio una copia dell immagine originale per la visualizzazione finale
+    clone = frame.copy()
     overlap = cv2.resize(overlap, (300, 300))
     rgb_color = cv2.resize(rgb_color, (300, 300))    
-    #l immagine finale
-    cv2.imshow("window_0", np.hstack([frame, overlap, rgb_color]))
     
-    #------------------
-    #gray = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
+    #estrazione dei contorni
     median = cv2.medianBlur(mask, 5)
     cnts = cv2.findContours(median.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cnts = cnts[0] if imutils.is_cv2() else cnts[1]
 
     cv2.drawContours(frame, cnts, -1, (0, 255, 0), 2)
-    cv2.imshow("gray", frame) 
+    
+    #l immagine finale
+    cv2.imshow("window_0", np.hstack([clone, rgb_color, overlap, frame]))
     
     #funzione di uscita
     if cv2.waitKey(1) & 0xFF == ord("q"): 
