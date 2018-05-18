@@ -24,7 +24,7 @@ cv2.createTrackbar("low_V", "window_0", 60, 255, nothing)
 cv2.createTrackbar("high_V", "window_0", 255, 255, nothing)
 
 
-#acquisisco lo stream video
+#lo stream video
 if not args.get("video", False):
     camera = cv2.VideoCapture(0)
 else:
